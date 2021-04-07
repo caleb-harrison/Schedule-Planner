@@ -1,0 +1,20 @@
+PODS:
+  - lottie-ios (3.2.1)
+  - SOTabBar (1.1.3)
+
+DEPENDENCIES:
+  - lottie-ios
+  - SOTabBar
+
+SPEC REPOS:
+  trunk:
+    - lottie-ios
+    - SOTabBar
+
+SPEC CHECKSUMS:
+  lottie-ios: 106e92eaf11fbed0a76590b4cdb9b5ec26123ff7
+  SOTabBar: 27aea95bd6b39d1be3535c867a2cd3b5adc172e6
+
+PODFILE CHECKSUM: f5b3d77e1b65e61d102e37b27dedee6e52543ccb
+
+COCOAPODS: 1.10.1

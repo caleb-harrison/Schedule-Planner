@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="17709" systemVersion="20D91" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Assignment" representedClassName="Assignment" syncable="YES" codeGenerationType="class">
+        <attribute name="desc" optional="YES" attributeType="String"/>
+        <attribute name="dueDate" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <relationship name="course" maxCount="1" deletionRule="Nullify" destinationEntity="Course" inverseName="assignments" inverseEntity="Course"/>
+    </entity>
+    <entity name="Course" representedClassName="Course" syncable="YES" codeGenerationType="class">
+        <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="friday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="instructor" optional="YES" attributeType="String"/>
+        <attribute name="monday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="name" optional="YES" attributeType="String"/>
+        <attribute name="thursday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="time" optional="YES" attributeType="Date" usesScalarValueType="NO"/>
+        <attribute name="tuesday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <attribute name="wednesday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
+        <relationship name="assignments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Assignment" inverseName="course" inverseEntity="Assignment"/>
+    </entity>
+    <elements>
+        <element name="Assignment" positionX="-54" positionY="63" width="128" height="89"/>
+        <element name="Course" positionX="-63" positionY="-18" width="128" height="179"/>
+    </elements>
+</model>
