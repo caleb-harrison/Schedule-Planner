@@ -19,7 +19,7 @@
         <relationship name="assignments" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Assignment" inverseName="course" inverseEntity="Assignment"/>
     </entity>
     <elements>
-        <element name="Assignment" positionX="-54" positionY="63" width="128" height="89"/>
-        <element name="Course" positionX="-63" positionY="-18" width="128" height="179"/>
+        <element name="Assignment" positionX="-118.7658081054687" positionY="269.368896484375" width="128" height="89"/>
+        <element name="Course" positionX="-63" positionY="-18" width="128" height="193"/>
     </elements>
 </model>

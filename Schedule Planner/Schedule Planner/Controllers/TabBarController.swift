@@ -27,16 +27,16 @@ class TabBarController: SOTabBarController {
         let profileStoryboard = UIStoryboard(name: "Main", bundle: nil).instantiateViewController(withIdentifier: "PROFILE_ID")
         
         // set home tab bar icon
-        homeStoryboard.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "home"), selectedImage: UIImage(named: "home_Selected"))
+        homeStoryboard.tabBarItem = UITabBarItem(title: "Home", image: UIImage(named: "purple-home"), selectedImage: UIImage(named: "home_Selected"))
         
         // set assignments tab bar icon
-        assignmentsStoryboard.tabBarItem = UITabBarItem(title: "Assignments", image: UIImage(named: "assignments"), selectedImage: UIImage(named: "assignments_Selected"))
+        assignmentsStoryboard.tabBarItem = UITabBarItem(title: "Assignments", image: UIImage(named: "purple-assignments"), selectedImage: UIImage(named: "assignments_Selected"))
         
         // set courses tab bar icon
-        coursesStoryboard.tabBarItem = UITabBarItem(title: "Courses", image: UIImage(named: "courses"), selectedImage: UIImage(named: "courses_Selected"))
+        coursesStoryboard.tabBarItem = UITabBarItem(title: "Courses", image: UIImage(named: "purple-courses"), selectedImage: UIImage(named: "courses_Selected"))
         
         // set profile tab bar icon
-        profileStoryboard.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(named: "profile"), selectedImage: UIImage(named: "profile_Selected"))
+        profileStoryboard.tabBarItem = UITabBarItem(title: "Profile", image: UIImage(named: "purple-profile"), selectedImage: UIImage(named: "profile_Selected"))
            
         // save all view controllers in array
         viewControllers = [homeStoryboard,
@@ -48,7 +48,7 @@ class TabBarController: SOTabBarController {
     override func loadView() {
         super.loadView()
         SOTabBarSetting.tabBarHeight = 50.0
-        SOTabBarSetting.tabBarTintColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        SOTabBarSetting.tabBarTintColor = UIColor(red: 81/255, green: 76/255, blue: 154/255, alpha: 1.0)
         SOTabBarSetting.tabBarSizeSelectedImage = CGFloat(25.0)
         SOTabBarSetting.tabBarCircleSize = CGSize(width: 60, height: 60)
     }

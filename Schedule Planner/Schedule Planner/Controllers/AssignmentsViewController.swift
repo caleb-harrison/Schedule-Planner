@@ -10,7 +10,7 @@ import Lottie
 import CoreData
 import Foundation
 
-class AssignmentsViewController: UIViewController,  UITableViewDelegate, UITableViewDataSource {
+class AssignmentsViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
     /// all assignment's table view
     @IBOutlet var tableView: UITableView!
@@ -18,11 +18,17 @@ class AssignmentsViewController: UIViewController,  UITableViewDelegate, UITable
     /// assignments array
     var assignments: [Assignment] = []
     
+    /// courses array
+    var courses: [Course] = []
+    
     /// selected index
     var selectedIndex: Int = 0
     
     /// view for animations
     let animationView = AnimationView()
+    
+    /// current semester label
+    @IBOutlet var currentSemester: UILabel!
     
     /// runs when view appears
     override func viewWillAppear(_ animated: Bool) {
@@ -37,6 +43,7 @@ class AssignmentsViewController: UIViewController,  UITableViewDelegate, UITable
         tableView.backgroundColor = UIColor.white
         
         getAssignments()
+        currentSemester.text = getSemester()
         print("Current assignments in array: \(assignments.count).")
         
         // add long press to delete
@@ -68,7 +75,9 @@ class AssignmentsViewController: UIViewController,  UITableViewDelegate, UITable
     /// sort assignments by due date/time
     func sortAssignments() {
         // checks time interval since now and sorts by distance
-        assignments.sort(by: {($0.dueDate!.timeIntervalSinceNow) < ($1.dueDate!.timeIntervalSinceNow)})
+        if assignments.count > 1 {
+            assignments.sort(by: {($0.dueDate!.timeIntervalSinceNow) < ($1.dueDate!.timeIntervalSinceNow)})
+        }
     }
     
     ///mark assignment as complete
@@ -153,8 +162,36 @@ class AssignmentsViewController: UIViewController,  UITableViewDelegate, UITable
     
     /// add new assignment/shows assignment creation screen
     @IBAction func addNewAssignment() {
-        // segue to add assignment screen
-        performSegue(withIdentifier: "AddAssignmentSegue", sender: self)
+        getCourses()
+        
+        if courses.count > 0 {
+            // segue to add assignment screen
+            performSegue(withIdentifier: "AddAssignmentSegue", sender: self)
+        } else {
+            // alert saying to add a course first
+            let alert = UIAlertController(title: "You must add a course before adding an assignment.", message: nil, preferredStyle: .alert)
+            alert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+        }
+        
+    }
+    
+    // get courses from database
+    func getCourses() {
+        guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+         
+        let managedContext = appDelegate.persistentContainer.viewContext
+        
+        let fetchRequest =
+           NSFetchRequest<NSManagedObject>(entityName: "Course")
+         
+        do {
+            courses = try managedContext.fetch(fetchRequest) as? [Course] ?? []
+        } catch let error as NSError {
+            print("Could not fetch. \(error), \(error.userInfo)")
+        }
     }
     
     /// get assignment's due date and turn to string (Month/Day)
@@ -205,6 +242,35 @@ class AssignmentsViewController: UIViewController,  UITableViewDelegate, UITable
         }
         
         return cell
+    }
+    
+    /// gets current semester and returns string
+    func getSemester() -> String {
+        let today = Date()
+        let year = Calendar.current.component(.year, from: today)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy"
+        
+        let springStart = formatter.date(from: "01-01-\(year)")
+        let springEnd = formatter.date(from: "05-01-\(year)")
+        let summerStart = formatter.date(from: "05-01-\(year)")
+        let summerEnd = formatter.date(from: "08-10-\(year)")
+        let fallStart = formatter.date(from: "08-10-\(year)")
+        let fallEnd = formatter.date(from: "12-31-\(year)")
+        
+        if (springStart! ... springEnd!).contains(today) {
+            //print("current semester: Spring")
+            return "Spring \(year)"
+        } else if (summerStart! ... summerEnd!).contains(today) {
+            //print("current semester: Summer")
+            return "Summer \(year)"
+        } else if (fallStart! ... fallEnd!).contains(today){
+            //print("current semester: Fall")
+            return "Spring \(year)"
+        } else {
+            //print("No semester/season found.")
+            return "Current Semester"
+        }
     }
     
     /// prepare view controller for segue

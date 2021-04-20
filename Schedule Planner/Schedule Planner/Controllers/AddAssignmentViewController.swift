@@ -14,7 +14,7 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
     @IBOutlet var tableView: UITableView!
     var parentVC: AssignmentsViewController!
     var courses2: [Course] = []
-    var selectedIndex: Int = -1
+    var selectedIndex: Int!
     var selectedCourse: Course!
     
     @IBOutlet var assignmentNameTextfield: UITextField!
@@ -34,6 +34,7 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
         // set date picker color and default to 11:59pm tonight
         let tonight = Calendar.current.date(bySettingHour: 23, minute: 59, second: 59, of: Date())!
         dueDatePicker.setValue(UIColor.white, forKeyPath: "textColor")
+        
         dueDatePicker.setDate(tonight, animated: false)
         
         getCourses()
@@ -42,25 +43,22 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
     
     /// save button clicked
     @IBAction func saveButtonClicked() {
-        guard let appDelegate =
-            UIApplication.shared.delegate as? AppDelegate else {
-            return
-        }
+        if checkFields() {
+            guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                return
+            }
 
-        let managedContext =
-        appDelegate.persistentContainer.viewContext
+            let managedContext = appDelegate.persistentContainer.viewContext
 
-        let entity =
-        NSEntityDescription.entity(forEntityName: "Assignment",
+            let entity = NSEntityDescription.entity(forEntityName: "Assignment",
                                   in: managedContext)!
 
-        let assignment = NSManagedObject(entity: entity,
+            let assignment = NSManagedObject(entity: entity,
                                   insertInto: managedContext) as! Assignment
         
-        if checkFields() {
             assignment.course = selectedCourse
-            assignment.name = assignmentNameTextfield.text ?? "name"
-            assignment.desc = assignmentDescTextfield.text ?? "desc"
+            assignment.name = assignmentNameTextfield.text
+            assignment.desc = assignmentDescTextfield.text
             assignment.dueDate = dueDatePicker.date
             
             do {
@@ -70,12 +68,6 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
             } catch let error as NSError {
                 print("Could not save. \(error), \(error.userInfo)")
             }
-            
-        } else {
-            let alert = UIAlertController(title: "Missing fields. Try again.", message: nil, preferredStyle: .alert)
-            alert.addAction(UIAlertAction(title: "Okay", style: .cancel, handler: nil))
-            self.present(alert, animated: true)
-            print("missing fields, try again!")
         }
     }
     
@@ -85,11 +77,44 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
     
     // check if text fields are filled in
     func checkFields() -> Bool {
-        if (assignmentNameTextfield.hasText) &&
-            (assignmentDescTextfield.hasText) &&
-            (selectedIndex != -1) {
+        var array = [String]()
+        var nameBool = false
+        var descBool = false
+        var courseBool = false
+        
+        if (assignmentNameTextfield.hasText) {
+            nameBool = true
+        } else {
+            array.append("Assignment Name")
+        }
+        
+        if (assignmentDescTextfield.hasText) {
+            descBool = true
+        } else {
+            array.append("Assignment Description")
+        }
+        
+        if (selectedCourse != nil) {
+            courseBool = true
+        } else {
+            array.append("Selected Course")
+        }
+        
+        if (nameBool && descBool && courseBool) {
             return true
         } else {
+            var string = ""
+            
+            for word in array {
+                string.append(word + "\n")
+            }
+            string.removeLast()
+            
+            let alert = UIAlertController(title: "Missing the following fields:", message: string, preferredStyle: .alert)
+            alert.setValue(NSAttributedString(string: alert.message ?? "", attributes: [NSAttributedString.Key.font: UIFont.systemFont(ofSize: 17, weight: UIFont.Weight.medium), NSAttributedString.Key.foregroundColor: UIColor.red]), forKey: "attributedMessage")
+            alert.addAction(UIAlertAction(title: "Try Again", style: .cancel, handler: nil))
+            self.present(alert, animated: true)
+            
             return false
         }
     }

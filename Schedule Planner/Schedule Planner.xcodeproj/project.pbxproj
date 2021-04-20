@@ -17,6 +17,7 @@
 		3C584FC4260A7B290053DF91 /* TabBarController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C584FC3260A7B290053DF91 /* TabBarController.swift */; };
 		3C584FC7260AE6A30053DF91 /* AddAssignmentViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C584FC6260AE6A30053DF91 /* AddAssignmentViewController.swift */; };
 		3C584FCB260BE1170053DF91 /* CourseCell2.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C584FCA260BE1160053DF91 /* CourseCell2.swift */; };
+		3C5FF5A0262AA4B100B8282A /* TodaysAssignmentCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3C5FF59F262AA4B100B8282A /* TodaysAssignmentCell.swift */; };
 		3CB1DE75260E127E0019B11B /* confetti.json in Resources */ = {isa = PBXBuildFile; fileRef = 3CB1DE74260E127E0019B11B /* confetti.json */; };
 		3CB1DE7C260E149E0019B11B /* confetti-2.json in Resources */ = {isa = PBXBuildFile; fileRef = 3CB1DE7B260E149E0019B11B /* confetti-2.json */; };
 		3CD9B79825E85C6600D2D281 /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 3CD9B79725E85C6600D2D281 /* AppDelegate.swift */; };
@@ -37,6 +38,7 @@
 		3C584FC3260A7B290053DF91 /* TabBarController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TabBarController.swift; sourceTree = "<group>"; };
 		3C584FC6260AE6A30053DF91 /* AddAssignmentViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AddAssignmentViewController.swift; sourceTree = "<group>"; };
 		3C584FCA260BE1160053DF91 /* CourseCell2.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = CourseCell2.swift; sourceTree = "<group>"; };
+		3C5FF59F262AA4B100B8282A /* TodaysAssignmentCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = TodaysAssignmentCell.swift; sourceTree = "<group>"; };
 		3CB1DE74260E127E0019B11B /* confetti.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = confetti.json; sourceTree = "<group>"; };
 		3CB1DE7B260E149E0019B11B /* confetti-2.json */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.json; path = "confetti-2.json"; sourceTree = "<group>"; };
 		3CD9B79425E85C6600D2D281 /* Schedule Planner.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Schedule Planner.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -91,6 +93,7 @@
 				3C584FBD260A76F00053DF91 /* CourseCell.swift */,
 				3C584FC0260A76FB0053DF91 /* AssignmentCell.swift */,
 				3C584FCA260BE1160053DF91 /* CourseCell2.swift */,
+				3C5FF59F262AA4B100B8282A /* TodaysAssignmentCell.swift */,
 			);
 			path = Views;
 			sourceTree = "<group>";
@@ -281,6 +284,7 @@
 				3C584FBE260A76F00053DF91 /* CourseCell.swift in Sources */,
 				3C584FCB260BE1170053DF91 /* CourseCell2.swift in Sources */,
 				3C584FBB260A76DB0053DF91 /* ProfileViewController.swift in Sources */,
+				3C5FF5A0262AA4B100B8282A /* TodaysAssignmentCell.swift in Sources */,
 				3C584FC1260A76FB0053DF91 /* AssignmentCell.swift in Sources */,
 				3CD9B79825E85C6600D2D281 /* AppDelegate.swift in Sources */,
 				3CD9B79A25E85C6600D2D281 /* SceneDelegate.swift in Sources */,

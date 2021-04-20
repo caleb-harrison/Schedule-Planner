@@ -20,6 +20,9 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
     /// selected index
     var selectedIndex: Int = 0
     
+    /// current semester label
+    @IBOutlet var currentSemester: UILabel!
+    
     /// runs when view appears
     override func viewWillAppear(_ animated: Bool) {
         getCourses()
@@ -28,12 +31,13 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
     /// runs when view first loads
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.rowHeight = 44
+        
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
         
         getCourses()
+        currentSemester.text = getSemester()
         
         // add long press to delete
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
@@ -239,6 +243,35 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
         self.present(alert, animated: true)
     }
     
+    /// gets current semester and returns string
+    func getSemester() -> String {
+        let today = Date()
+        let year = Calendar.current.component(.year, from: today)
+        let formatter = DateFormatter()
+        formatter.dateFormat = "MM-dd-yyyy"
+        
+        let springStart = formatter.date(from: "01-01-\(year)")
+        let springEnd = formatter.date(from: "05-01-\(year)")
+        let summerStart = formatter.date(from: "05-01-\(year)")
+        let summerEnd = formatter.date(from: "08-10-\(year)")
+        let fallStart = formatter.date(from: "08-10-\(year)")
+        let fallEnd = formatter.date(from: "12-31-\(year)")
+        
+        if (springStart! ... springEnd!).contains(today) {
+            //print("current semester: Spring")
+            return "Spring \(year)"
+        } else if (summerStart! ... summerEnd!).contains(today) {
+            //print("current semester: Summer")
+            return "Summer \(year)"
+        } else if (fallStart! ... fallEnd!).contains(today){
+            //print("current semester: Fall")
+            return "Spring \(year)"
+        } else {
+            //print("No semester/season found.")
+            return "Current Semester"
+        }
+    }
+    
     /// clicked course cell function
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showCourseInfo(indexPath: indexPath)
@@ -253,6 +286,8 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "CourseCell", for: indexPath) as! CourseCell
         cell.courseLabel.text = courses[indexPath.row].name
+        cell.instructorLabel.text = courses[indexPath.row].instructor
+        
         return cell
     }
     

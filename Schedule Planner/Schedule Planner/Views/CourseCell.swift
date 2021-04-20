@@ -13,4 +13,7 @@ class CourseCell: UITableViewCell {
     /// label to show course name
     @IBOutlet var courseLabel: UILabel!
     
+    /// label to show instructor name
+    @IBOutlet var instructorLabel: UILabel!
+    
 }
