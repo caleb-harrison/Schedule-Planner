@@ -6,11 +6,13 @@
 //
 
 import UIKit
+import Combine
 import CoreData
 import Foundation
+import SwifterSwift
 
 class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     /// all course's table view
     @IBOutlet var tableView: UITableView!
     
@@ -32,6 +34,7 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        //deleteAll()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
@@ -109,7 +112,7 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
         })
         
         // cancel button
-        let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: { (action) -> Void in })
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) -> Void in })
         
         // textfield (for course name)
         alert.addTextField { (textField: UITextField) in
@@ -204,7 +207,7 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
         })
         
         // cancel button
-        let cancel = UIAlertAction(title: "Cancel", style: .destructive, handler: { (action) -> Void in })
+        let cancel = UIAlertAction(title: "Cancel", style: .cancel, handler: { (action) -> Void in })
         
         // textfield (for course name)
         alert.addTextField { (textField: UITextField) in
@@ -233,12 +236,16 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
     
     /// alert to show course info
     func showCourseInfo(indexPath: IndexPath) {
-        let alert = UIAlertController(title: courses[indexPath.row].name, message: "\(courses[indexPath.row].instructor ?? "instructor") // Assignments: \(courses[indexPath.row].assignments?.count ?? 0)", preferredStyle: .alert)
+        let alert = UIAlertController(title: courses[indexPath.row].name, message: "\(courses[indexPath.row].instructor ?? "instructor") - Assignments: \(courses[indexPath.row].assignments?.count ?? 0)", preferredStyle: .alert)
         selectedIndex = indexPath.row
         alert.addAction(UIAlertAction(title: "Cancel", style: .cancel, handler: nil))
-        alert.addAction(UIAlertAction(title: "Edit", style: .default, handler: {_ in
+        alert.addAction(UIAlertAction(title: "Edit Course", style: .default, handler: {_ in
             alert.dismiss(animated: true, completion: {})
             self.editCourseInfo(indexPath: indexPath)
+        }))
+        alert.addAction(UIAlertAction(title: "Change Color", style: .default, handler: {_ in
+            // change color
+            self.changeColor(indexPath: indexPath)
         }))
         self.present(alert, animated: true)
     }
@@ -272,6 +279,38 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
         }
     }
     
+    var cancellable: AnyCancellable?
+    
+    func changeColor(indexPath: IndexPath) {
+        let picker = UIColorPickerViewController()
+        picker.selectedColor = UIColor(hexString: courses[indexPath.row].courseColor ?? "#858585") ?? UIColor.systemGreen
+            
+        //  Subscribing selectedColor property changes.
+        self.cancellable = picker.publisher(for: \.selectedColor)
+            .sink { color in
+                
+                //  Changing view color on main thread.
+                DispatchQueue.main.async {
+                    self.courses[indexPath.row].courseColor = color.hexString
+                    self.tableView.reloadData()
+                    
+                    guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
+                        return
+                    }
+
+                    let managedContext = appDelegate.persistentContainer.viewContext
+                    
+                    do {
+                        try managedContext.save()
+                    } catch let error as NSError {
+                        print("Could not save. \(error), \(error.userInfo)")
+                    }
+                }
+            }
+        
+        self.present(picker, animated: true, completion: nil)
+    }
+    
     /// clicked course cell function
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         showCourseInfo(indexPath: indexPath)
@@ -287,8 +326,43 @@ class CoursesViewController: UIViewController, UITableViewDelegate, UITableViewD
         let cell = tableView.dequeueReusableCell(withIdentifier: "CourseCell", for: indexPath) as! CourseCell
         cell.courseLabel.text = courses[indexPath.row].name
         cell.instructorLabel.text = courses[indexPath.row].instructor
+        cell.thumbnailLabel.text = "\(courses[indexPath.row].name!.prefix(1))"
+        cell.thumbnailView.backgroundColor = UIColor(hexString: courses[indexPath.row].courseColor ?? "#858585")
+        cell.addRoundCorners()
         
         return cell
+    }
+    
+    /// delete all objects in database
+    func deleteAll() {
+        
+        guard let appDelegate =
+            UIApplication.shared.delegate as? AppDelegate else {
+            return
+        }
+        let managedContext =
+        appDelegate.persistentContainer.viewContext
+        
+        // Initialize Fetch Request
+        let fetchRequest = NSFetchRequest<NSFetchRequestResult>(entityName: "Course")
+
+        // Configure Fetch Request
+        fetchRequest.includesPropertyValues = false
+
+        do {
+            let items = try managedContext.fetch(fetchRequest) as! [NSManagedObject]
+
+            for item in items {
+                managedContext.delete(item)
+            }
+
+            // Save Changes
+            try managedContext.save()
+
+        } catch {
+            // Error Handling
+            // ...
+        }
     }
     
 }

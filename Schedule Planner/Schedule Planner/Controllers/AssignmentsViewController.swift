@@ -38,6 +38,8 @@ class AssignmentsViewController: UIViewController, UITableViewDelegate, UITableV
     /// runs when view first loads
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //deleteAll()
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
@@ -199,7 +201,7 @@ class AssignmentsViewController: UIViewController, UITableViewDelegate, UITableV
         let date = assignment.dueDate!
         let formatter = DateFormatter()
         formatter.dateFormat = "M/dd"
-        return (formatter.string(from: date))
+        return "Due: \((formatter.string(from: date)))"
     }
     
     /// get assignment's due time and turn to string (Hour:Minute)
@@ -230,6 +232,7 @@ class AssignmentsViewController: UIViewController, UITableViewDelegate, UITableV
         cell.dueDateLabel.text = monthAndDayToString(assignment: assignments[indexPath.row])
         cell.dueTimeLabel.text = timeToString(assignment: assignments[indexPath.row])
         cell.courseNameLabel.text = String(assignments[indexPath.row].course!.name ?? "No Course Selected")
+        cell.courseNameLabel.textColor = UIColor(hexString: assignments[indexPath.row].course!.courseColor ?? "#858585")
         
         cell.completeButtonAction = { [unowned self] in
             

@@ -8,6 +8,7 @@
     </entity>
     <entity name="Course" representedClassName="Course" syncable="YES" codeGenerationType="class">
         <attribute name="color" optional="YES" attributeType="Integer 16" defaultValueString="0" usesScalarValueType="YES"/>
+        <attribute name="courseColor" optional="YES" attributeType="String"/>
         <attribute name="friday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
         <attribute name="instructor" optional="YES" attributeType="String"/>
         <attribute name="monday" optional="YES" attributeType="Boolean" usesScalarValueType="YES"/>
@@ -20,6 +21,6 @@
     </entity>
     <elements>
         <element name="Assignment" positionX="-118.7658081054687" positionY="269.368896484375" width="128" height="89"/>
-        <element name="Course" positionX="-63" positionY="-18" width="128" height="193"/>
+        <element name="Course" positionX="-63" positionY="-18" width="128" height="208"/>
     </elements>
 </model>

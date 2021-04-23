@@ -8,8 +8,9 @@
 import UIKit
 import CoreData
 import Foundation
+import UserNotifications
 
-class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITableViewDataSource {
+class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITableViewDataSource, UITextFieldDelegate {
 
     @IBOutlet var tableView: UITableView!
     var parentVC: AssignmentsViewController!
@@ -27,6 +28,8 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
     override func viewDidLoad() {
         super.viewDidLoad()
         makeButtonsPretty()
+        assignmentNameTextfield.delegate = self
+        assignmentDescTextfield.delegate = self
         tableView.delegate = self
         tableView.dataSource = self
         tableView.backgroundColor = UIColor.white
@@ -64,6 +67,10 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
             do {
                 try managedContext.save()
                 self.parentVC.getAssignments() // update assignment table view
+                
+                // set notification for due date
+                scheduleNotification(assignmentName: assignmentNameTextfield.text!, dueDate: dueDatePicker.date)
+                
                 self.dismiss(animated: true, completion: {})
             } catch let error as NSError {
                 print("Could not save. \(error), \(error.userInfo)")
@@ -119,6 +126,48 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
         }
     }
     
+    /// schedule notification for due date at selected time everyday
+    func scheduleNotification(assignmentName: String, dueDate: Date) {
+        let center = UNUserNotificationCenter.current()
+        
+        // Requests authorization from the user for notifications to be sent through the app.
+        center.requestAuthorization(options: [.alert, .sound]) {(granted, error) in
+        }
+        
+        // Creates notification "reminder" with attributes title, body, and sound.
+        // Sound will have to be changed from current da baby LEZ GOOOOO
+        
+        let reminder = UNMutableNotificationContent()
+        let formatter = DateFormatter()
+        formatter.dateFormat = "hh:mm"
+        let dueTime = formatter.string(from: dueDate)
+        
+        reminder.title = "Your assignment, \(assignmentName), is due today at \(dueTime)."
+        // reminder.body = assignmentDescTextfield.text ?? "desc"
+        // reminder.sound = UNNotificationSound(named: UNNotificationSoundName(rawValue: "vibez-lets-go.mp3"))
+        
+        // This part is the one that is still in progress, when setting date equal
+        // to dueDatePicker.date it pulls from the date and time the user said the
+        // assignment is due at. This will need to be changed to 8AM and is currently
+        // being worked on.
+        
+        let date = Calendar.current.date(bySettingHour: 9, minute: 30, second: 00, of: dueDate)! // 9:30AM
+        // let date = Calendar.current.date(bySettingHour: 17, minute: 18, second: 00, of: dueDate)! // 5:10PM
+        
+        print("Scheduled notification for \(date)")
+        let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second ], from: date)
+        
+        // The trigger basically just checks to see what time it is and if it
+        // matches the date in "let date = dueDatePicker.date" the notification
+        // will be pushed
+        let trigger = UNCalendarNotificationTrigger(dateMatching: dateComponents, repeats: false)
+        let uuidString = UUID().uuidString
+        let request = UNNotificationRequest(identifier: uuidString, content: reminder, trigger: trigger)
+        
+        center.add(request) { (error) in
+        }
+    }
+    
     // get courses from database
     func getCourses() {
         guard let appDelegate = UIApplication.shared.delegate as? AppDelegate else {
@@ -136,6 +185,11 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
         } catch let error as NSError {
             print("Could not fetch. \(error), \(error.userInfo)")
         }
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        textField.resignFirstResponder()
+        return true
     }
     
     // clicked course function

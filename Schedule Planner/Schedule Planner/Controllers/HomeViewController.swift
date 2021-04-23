@@ -12,9 +12,11 @@ import Foundation
 
 class HomeViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
 
-    @IBOutlet var dateLabel: UILabel!
-    @IBOutlet var assignmentCountLabel: UILabel!
+    @IBOutlet var profilePicture: UIImageView!
     @IBOutlet var tableView: UITableView!
+    @IBOutlet var profileName: UILabel!
+    @IBOutlet var assignmentCountLabel: UILabel!
+    @IBOutlet var homeMessage: UILabel!
     
     /// view for animations
     let animationView = AnimationView()
@@ -27,8 +29,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
     
     /// runs when view appears
     override func viewWillAppear(_ animated: Bool) {
-        showTodaysDate()
         getTodaysAssignments()
+        getProfilePicture()
+        getProfileName()
     }
     
     override func viewDidLoad() {
@@ -38,12 +41,18 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         tableView.backgroundColor = UIColor.white
         
         getTodaysAssignments()
+        getWelcomeMessage()
         print("Todays assignments in array: \(assignments.count).")
         
         // add long press to delete
         let longPressGesture = UILongPressGestureRecognizer(target: self, action: #selector(handleLongPress))
         longPressGesture.minimumPressDuration = 0.5
         self.tableView.addGestureRecognizer(longPressGesture)
+    }
+    
+    override func viewDidLayoutSubviews() {
+        super.viewDidLayoutSubviews()
+        self.profilePicture.layer.cornerRadius = profilePicture.bounds.width/2
     }
     
     /// get todays assignments from database, sort, and reload tableview
@@ -77,13 +86,6 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         assignmentCountLabel.text = "You have \(assignments.count) assignments due today."
         
         // assignments.count is the amount of assignments due today
-    }
-    
-    /// shows todays date on label
-    func showTodaysDate() {
-        let formatter = DateFormatter()
-        formatter.dateFormat = "EEEE, MMMM d"
-        dateLabel.text = formatter.string(from: Date())
     }
     
     /// sort assignments by due date/time
@@ -164,7 +166,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         let date = assignment.dueDate!
         let formatter = DateFormatter()
         formatter.dateFormat = "M/dd"
-        return (formatter.string(from: date))
+        return "Due: \((formatter.string(from: date)))"
     }
     
     /// get assignment's due time and turn to string (Hour:Minute)
@@ -175,6 +177,24 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         formatter.pmSymbol = "PM"
         formatter.dateFormat = "h:mma"
         return (formatter.string(from: time))
+    }
+    
+    func getProfileName() {
+        profileName.text = UserDefaults.standard.string(forKey: "ProfileName") ?? "Student"
+    }
+    
+    func getProfilePicture() {
+        if let imageData = UserDefaults.standard.object(forKey: "profilePicture") as? Data, let image = UIImage(data: imageData) {
+            
+            self.profilePicture.image = image
+        }
+    }
+    
+    func getWelcomeMessage() {
+        let phrases = ["Welcome back,",
+                       "What's up,",
+                       "Do your work,"]
+        homeMessage.text = phrases.randomElement()
     }
     
     /// clicked assignment function
@@ -194,6 +214,7 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         cell.dueDateLabel.text = monthAndDayToString(assignment: assignments[indexPath.row])
         cell.dueTimeLabel.text = timeToString(assignment: assignments[indexPath.row])
         cell.courseNameLabel.text = String(assignments[indexPath.row].course!.name ?? "No Course Selected")
+        cell.courseNameLabel.textColor = UIColor(hexString: assignments[indexPath.row].course!.courseColor ?? "#858585")
         
         cell.completeButtonAction = { [unowned self] in
             self.completeAssignment(indexPath: indexPath)
@@ -202,4 +223,9 @@ class HomeViewController: UIViewController, UITableViewDelegate, UITableViewData
         return cell
     }
     
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        let formatter = DateFormatter()
+        formatter.dateFormat = "EEEE, MMMM d"
+        return formatter.string(from: Date())
+    }
 }

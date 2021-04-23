@@ -8,5 +8,6 @@ target 'Schedule Planner' do
   # Pods for Schedule Planner
   pod 'SOTabBar' # tab bar pod
   pod 'lottie-ios' # lottie animations pod
+  pod 'SwifterSwift' # used for color hexstrings
 
 end
