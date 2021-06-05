@@ -151,8 +151,8 @@ class AddAssignmentViewController: UIViewController,  UITableViewDelegate, UITab
         // assignment is due at. This will need to be changed to 8AM and is currently
         // being worked on.
         
-        let date = Calendar.current.date(bySettingHour: 9, minute: 30, second: 00, of: dueDate)! // 9:30AM
-        // let date = Calendar.current.date(bySettingHour: 17, minute: 18, second: 00, of: dueDate)! // 5:10PM
+        //let date = Calendar.current.date(bySettingHour: 9, minute: 30, second: 00, of: dueDate)! // 9:30AM
+        let date = Calendar.current.date(bySettingHour: 20, minute: 55, second: 00, of: dueDate)! // 5:10PM
         
         print("Scheduled notification for \(date)")
         let dateComponents = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .second ], from: date)
